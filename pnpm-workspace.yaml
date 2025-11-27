@@ -1,0 +1,9 @@
+onlyBuiltDependencies:
+  - '@parcel/watcher'
+  - esbuild
+  - optipng-bin
+  - pngquant-bin
+  - sharp
+  - tauri
+  - vue-demi
+  - zopflipng-bin
