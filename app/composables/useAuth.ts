@@ -23,7 +23,7 @@ export function useAuth() {
 			error.value = signInError.message;
 			throw signInError;
 		}
-		return navigateTo("/dashboard");
+		navigateTo("/dashboard");
 	}
 
 	async function signup(data: CreateAccountSchema) {
@@ -37,7 +37,7 @@ export function useAuth() {
 			password,
 			options: {
 				data: {
-					fullName
+					full_name: fullName
 				}
 			}
 		});

@@ -1,2 +1,17 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
+
+@layer base {
+	*::-webkit-scrollbar {
+		display: none;
+	}
+	* {
+		scrollbar-width: none;
+	}
+
+	input[type="password"]::-ms-reveal,
+	input[type="password"]::-ms-clear,
+	input[type="password"]::-webkit-password-toggle-button {
+		@apply hidden;
+	}
+}

@@ -1,6 +1,9 @@
 <template>
 	<div class="max-w-md w-full mx-auto pt-32 px-8 space-y-4">
-		<UTabs :items="tabItems">
+		<p v-if="!loading && user">
+			Logged in as {{ user.user_metadata?.fullName }}
+		</p>
+		<UTabs v-else :items="tabItems">
 			<template #signin>
 				<UAuthForm
 					:schema="logInSchema"
@@ -18,17 +21,13 @@
 				/>
 			</template>
 		</UTabs>
-		<div class="flex justify-center py-2">
-			<p v-if="loading" class="text-sm">{{ loading }}</p>
-			<p v-else-if="error" class="text-red-600">{{ error }}</p>
-			<p v-else-if="user" class="text-sm">{{ user }}</p>
-		</div>
+		<p v-if="error">{{ error }}}</p>
 	</div>
 </template>
 
 <script setup lang="ts">
 	import type { FormSubmitEvent } from "@nuxt/ui";
-	const { login, signup, loading, error, user } = useAuth();
+	const { login, signup, user, loading, error } = useAuth();
 
 	definePageMeta({
 		title: "Login",
@@ -45,6 +44,7 @@
 			navigateTo("/dashboard");
 		}
 	});
+
 	async function onLogIn(payload: FormSubmitEvent<LogInSchema>) {
 		try {
 			await login(payload.data);
