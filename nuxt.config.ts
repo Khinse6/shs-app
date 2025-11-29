@@ -16,6 +16,7 @@ export default defineNuxtConfig({
 		redirect: true,
 		useSsrCookies: false,
 		redirectOptions: {
+			include: ["/admin(/*)?", "/dashboard(/*)?"],
 			login: "/login",
 			callback: "/confirm"
 		}
