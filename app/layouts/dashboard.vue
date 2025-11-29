@@ -11,7 +11,9 @@
 				</UDashboardNavbar>
 			</template>
 			<template #body>
-				<slot />
+				<main class="flex min-h-fit h-full">
+					<slot />
+				</main>
 			</template>
 		</UDashboardPanel>
 	</UDashboardGroup>
