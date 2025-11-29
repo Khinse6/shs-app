@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="w-full h-screen m-0 pt-[10vh] flex flex-col justify-center items-center text-center font-sans text-[#0f0f0f] dark:text-[#f6f6f6]"
+		class="w-full flex flex-col justify-center items-center text-center font-sans text-[#0f0f0f] dark:text-[#f6f6f6]"
 	>
 		<h1 class="text-center text-2xl font-semibold mb-6">
 			Welcome to Tauri + Vue
@@ -45,7 +45,6 @@
 		<p>{{ greetMsg }}</p>
 		<p v-if="user" class="my-4">{{ user.user_metadata?.fullName }}</p>
 		<p v-if="user" class="my-4">{{ user }}</p>
-		<UButton label="Logout" @click="logout" />
 	</div>
 </template>
 
@@ -55,7 +54,7 @@
 		layout: "dashboard"
 	});
 
-	const { logout, user } = useAuth();
+	const { user } = useAuth();
 	console.log("User in index.vue:", user);
 	import { invoke } from "@tauri-apps/api/core";
 
