@@ -1,4 +1,4 @@
-export function useAuth() {
+export default function () {
 	const client = useSupabaseClient();
 	const user = useSupabaseUser();
 

@@ -5,18 +5,8 @@ export const pages = ref([
 		icon: "heroicons:home"
 	},
 	{
-		label: "Products",
-		to: "/dashboard/products",
-		icon: "heroicons:academic-cap",
-		children: [
-			{
-				label: "Rice",
-				to: "/dashboard/products/rice"
-			},
-			{
-				label: "Beans",
-				to: "/dashboard/products/beans"
-			}
-		]
+		label: "Houses",
+		to: "/dashboard/houses",
+		icon: "heroicons:home"
 	}
 ]);
