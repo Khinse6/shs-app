@@ -18,25 +18,22 @@ export type Database = {
         Row: {
           created_at: string
           house_id: string
-          id: number
           item_id: number
-          lower_limit: number | null
+          lower_limit: number
           quantity: number
         }
         Insert: {
           created_at?: string
           house_id: string
-          id?: number
           item_id: number
-          lower_limit?: number | null
+          lower_limit: number
           quantity: number
         }
         Update: {
           created_at?: string
           house_id?: string
-          id?: number
           item_id?: number
-          lower_limit?: number | null
+          lower_limit?: number
           quantity?: number
         }
         Relationships: [
@@ -56,63 +53,21 @@ export type Database = {
           },
         ]
       }
-      house_members: {
-        Row: {
-          created_at: string
-          house_id: string
-          id: number
-          member_id: string
-          name: string
-        }
-        Insert: {
-          created_at?: string
-          house_id: string
-          id?: number
-          member_id: string
-          name?: string
-        }
-        Update: {
-          created_at?: string
-          house_id?: string
-          id?: number
-          member_id?: string
-          name?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "house_members_house_id_fkey"
-            columns: ["house_id"]
-            isOneToOne: false
-            referencedRelation: "houses"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "house_members_member_id_fkey"
-            columns: ["member_id"]
-            isOneToOne: false
-            referencedRelation: "members"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       house_requests: {
         Row: {
           created_at: string
           house_id: string
-          id: number
-          member_id: string
+          user_id: string
         }
         Insert: {
           created_at?: string
           house_id: string
-          id?: number
-          member_id: string
+          user_id?: string
         }
         Update: {
           created_at?: string
           house_id?: string
-          id?: number
-          member_id?: string
+          user_id?: string
         }
         Relationships: [
           {
@@ -123,31 +78,75 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "house_requests_member_id_fkey"
-            columns: ["member_id"]
+            foreignKeyName: "house_requests_user_id_fkey"
+            columns: ["user_id"]
             isOneToOne: false
-            referencedRelation: "members"
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      house_users: {
+        Row: {
+          created_at: string | null
+          house_id: string
+          role: Database["public"]["Enums"]["house_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          house_id: string
+          role?: Database["public"]["Enums"]["house_role"]
+          user_id?: string
+        }
+        Update: {
+          created_at?: string | null
+          house_id?: string
+          role?: Database["public"]["Enums"]["house_role"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "house_members_house_id_fkey"
+            columns: ["house_id"]
+            isOneToOne: false
+            referencedRelation: "houses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "house_members_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
             referencedColumns: ["id"]
           },
         ]
       }
       houses: {
         Row: {
-          code: string
           created_at: string
           id: string
+          user_id: string
         }
         Insert: {
-          code: string
           created_at?: string
           id?: string
+          user_id?: string
         }
         Update: {
-          code?: string
           created_at?: string
           id?: string
+          user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "houses_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       items: {
         Row: {
@@ -167,7 +166,43 @@ export type Database = {
         }
         Relationships: []
       }
-      members: {
+      user_house_settings: {
+        Row: {
+          created_at: string
+          house_display_name: string
+          house_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          house_display_name?: string
+          house_id: string
+          user_id?: string
+        }
+        Update: {
+          created_at?: string
+          house_display_name?: string
+          house_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_house_settings_house_id_fkey"
+            columns: ["house_id"]
+            isOneToOne: false
+            referencedRelation: "houses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_house_settings_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      users: {
         Row: {
           created_at: string
           email: string
@@ -193,10 +228,17 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      create_house: {
+        Args: { display_name: string }
+        Returns: {
+          house_id: string
+        }[]
+      }
       generate_hex_code: { Args: { len?: number }; Returns: string }
     }
     Enums: {
       base_unit: "g" | "ml" | "unit"
+      house_role: "member" | "admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -325,6 +367,7 @@ export const Constants = {
   public: {
     Enums: {
       base_unit: ["g", "ml", "unit"],
+      house_role: ["member", "admin"],
     },
   },
 } as const

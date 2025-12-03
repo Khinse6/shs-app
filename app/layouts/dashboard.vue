@@ -3,15 +3,14 @@
 		<Sidebar />
 		<UDashboardPanel id="main">
 			<template #header>
-				<UDashboardNavbar title="Home">
-					<template #left>
+				<UDashboardNavbar :title="title">
+					<template #leading>
 						<UDashboardSidebarCollapse />
-						<UBreadcrumb :items="breadcrumbItems" />
 					</template>
 				</UDashboardNavbar>
 			</template>
 			<template #body>
-				<main class="flex min-h-fit h-full">
+				<main class="flex h-full min-h-fit">
 					<slot />
 				</main>
 			</template>
@@ -21,5 +20,5 @@
 
 <script setup lang="ts">
 	const route = useRoute();
-	const breadcrumbItems = computed(() => generateBreadcrumb(route));
+	const title = route.meta.title as string;
 </script>

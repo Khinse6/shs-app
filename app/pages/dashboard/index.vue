@@ -1,91 +1,39 @@
 <template>
-	<div
-		class="w-full flex flex-col justify-center items-center text-center font-sans text-[#0f0f0f] dark:text-[#f6f6f6]"
-	>
-		<h1 class="text-center text-2xl font-semibold mb-6">
-			Welcome to Tauri + Vue
-		</h1>
-
-		<div class="flex justify-center mb-6">
-			<a
-				v-for="item in items"
-				:key="item.title"
-				:href="item.link"
-				target="_blank"
-				class="font-medium text-[#646cff] no-underline hover:text-[#535bf2] transition-colors duration-200"
-			>
-				<img
-					:src="item.logo"
-					class="h-[6em] p-[1.5em] transition-all duration-750 will-change-transform"
-					:class="item.hover"
-					:alt="item.alt"
-				/>
-			</a>
-		</div>
-		<p class="mb-6">Click on the Tauri, Vite, and Vue logos to learn more.</p>
-		<form
-			class="flex justify-center items-center gap-2 mb-4"
-			@submit.prevent="greet"
-		>
-			<input
-				id="greet-input"
-				v-model="name"
-				autocomplete="off"
-				placeholder="Enter a name..c."
-				class="rounded-md border border-transparent px-4 py-2 text-base font-medium text-[#0f0f0f] bg-white shadow-md outline-none transition-colors duration-200 dark:text-white dark:bg-[#0f0f0f98]"
+	<div class="p-4">
+		<p v-if="pending && (!houses || houses.length === 0)">Loading Houses</p>
+		<p v-else-if="error">{{ error }}</p>
+		<p v-else-if="!houses || houses?.length === 0">No houses found</p>
+		<template v-else>
+			<h1>All Houses</h1>
+			<UPageCard
+				v-for="house in houses"
+				:key="house.id"
+				:title="house.displayName"
+				:description="'Code: ' + house.id + 'Owner: ' + house.owner"
+				:to="'/dashboard/houses/' + house.id"
+				variant="soft"
+				class="mb-2 cursor-pointer"
 			/>
-			<button
-				type="submit"
-				class="rounded-md border border-transparent px-4 py-2 text-base font-medium text-[#0f0f0f] bg-white shadow-md cursor-pointer transition-colors duration-200 hover:border-[#396cd8] active:border-[#396cd8] active:bg-[#e8e8e8] dark:text-white dark:bg-[#0f0f0f98] dark:active:bg-[#0f0f0f69]"
-			>
-				Greet
-			</button>
-		</form>
-
-		<p>{{ greetMsg }}</p>
-		<p v-if="user" class="my-4">{{ user.user_metadata?.fullName }}</p>
-		<p v-if="user" class="my-4">{{ user }}</p>
+		</template>
+		<UButton label="Create House" @click="onCreateHouse" />
 	</div>
 </template>
 
 <script setup lang="ts">
-	definePageMeta({
-		title: "Home",
-		layout: "dashboard"
-	});
+	definePageMeta({ title: 'Dashboard', layout: 'dashboard' });
 
-	const { user } = useAuth();
-	console.log("User in index.vue:", user);
-	import { invoke } from "@tauri-apps/api/core";
+	// const { getHouses, createHouse } = useHouse();
+	// const { data: houses, error, pending, refresh } = await getHouses();
 
-	const greetMsg = ref("");
-	const name = ref("");
+	const houseStore = useHouseStore();
+	const {
+		houses,
+		housesError: error,
+		housesPending: pending,
+	} = storeToRefs(houseStore);
+	await callOnce('houses', () => houseStore.getHouses());
 
-	async function greet() {
-		greetMsg.value = await invoke("greet", { name: name.value });
+	async function onCreateHouse() {
+		console.log('create house yeyy!');
 	}
-
-	const items = [
-		{
-			link: "https://vite.dev",
-			logo: "/vite.svg",
-			title: "Vite",
-			alt: "Vite Logo",
-			hover: "hover:drop-shadow-[0_0_2em_#747bff]"
-		},
-		{
-			link: "https://tauri.app",
-			logo: "/tauri.svg",
-			title: "Tauri",
-			alt: "Tauri Logo",
-			hover: "hover:drop-shadow-[0_0_2em_#24c8db]"
-		},
-		{
-			link: "https://vuejs.org/",
-			logo: "/vue.svg",
-			title: "Vue",
-			alt: "Vue Logo",
-			hover: "hover:drop-shadow-[0_0_2em_#249b73]"
-		}
-	];
 </script>

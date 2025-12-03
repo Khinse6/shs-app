@@ -1,0 +1,16 @@
+{
+	"trailingComma": "es5",
+	"tabWidth": 2,
+	"useTabs": true,
+	"semi": true,
+	"singleQuote": true,
+	"plugins": ["prettier-plugin-tailwindcss", "@prettier/plugin-oxc"],
+	"vueIndentScriptAndStyle": true,
+	"singleAttributePerLine": false,
+	"printWidth": 80,
+	"objectWrap": "preserve",
+	"bracketSpacing": true,
+	"bracketSameLine": false,
+	"arrowParens": "always",
+	"proseWrap": "preserve"
+}

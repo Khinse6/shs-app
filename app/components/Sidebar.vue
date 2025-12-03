@@ -20,7 +20,7 @@
 			<UButton
 				leading-icon="heroicons:arrow-left-start-on-rectangle"
 				:label="collapsed ? undefined : 'Logout'"
-				@click="logout"
+				@click="onLogout"
 				color="neutral"
 				variant="soft"
 				class="w-full"
@@ -31,12 +31,34 @@
 </template>
 
 <script lang="ts" setup>
-	import { pages } from "~/constants/routes";
+	import { error } from '#build/ui';
+	import type { NavigationMenuItem } from '@nuxt/ui';
 
+	const user = useSupabaseUser();
+	const { signOut } = useAuth();
 	const collapsed = ref(false);
-	defineShortcuts({
-		c: () => (collapsed.value = !collapsed.value)
-	});
 
-	const { user, logout } = useAuth();
+	defineShortcuts({ c: () => (collapsed.value = !collapsed.value) });
+
+	const houseStore = useHouseStore();
+	const houseMembersStore = useHouseMembersStore();
+	const houseRequestsStore = useHouseRequestsStore();
+
+	const pages = <NavigationMenuItem[]>[
+		{
+			label: 'Home',
+			to: '/dashboard',
+			icon: 'heroicons:home',
+		},
+	];
+
+	async function onLogout() {
+		const { error: logoutError } = await signOut();
+		if (logoutError) throw error;
+
+		houseStore.reset();
+		houseMembersStore.reset();
+		houseRequestsStore.reset();
+		navigateTo('/dashboard/login');
+	}
 </script>
