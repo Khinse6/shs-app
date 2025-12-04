@@ -22,18 +22,10 @@
 <script setup lang="ts">
 	definePageMeta({ title: 'Dashboard', layout: 'dashboard' });
 
-	// const { getHouses, createHouse } = useHouse();
-	// const { data: houses, error, pending, refresh } = await getHouses();
-
-	const houseStore = useHouseStore();
-	const {
-		houses,
-		housesError: error,
-		housesPending: pending,
-	} = storeToRefs(houseStore);
-	await callOnce('houses', () => houseStore.getHouses());
+	const { getHouses, createHouse } = useHouse();
+	const { data: houses, error, pending } = await getHouses();
 
 	async function onCreateHouse() {
-		console.log('create house yeyy!');
+		await createHouse('ABC');
 	}
 </script>

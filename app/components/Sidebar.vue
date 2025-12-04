@@ -31,34 +31,37 @@
 </template>
 
 <script lang="ts" setup>
-	import { error } from '#build/ui';
-	import type { NavigationMenuItem } from '@nuxt/ui';
-
+	import type { NavigationMenuItem, NavigationMenuChildItem } from '@nuxt/ui';
 	const user = useSupabaseUser();
 	const { signOut } = useAuth();
 	const collapsed = ref(false);
 
 	defineShortcuts({ c: () => (collapsed.value = !collapsed.value) });
+	const { data: houses } = await useHouse().getHouses();
 
-	const houseStore = useHouseStore();
-	const houseMembersStore = useHouseMembersStore();
-	const houseRequestsStore = useHouseRequestsStore();
+	const housePages = ref<NavigationMenuChildItem[]>([]);
 
-	const pages = <NavigationMenuItem[]>[
+	watchEffect(() => {
+		housePages.value =
+			houses.value?.map((row) => ({
+				label: row.displayName,
+				to: '/dashboard/houses/' + row.id,
+			})) ?? [];
+	});
+
+	const pages = computed<NavigationMenuItem[]>(() => [
 		{
 			label: 'Home',
 			to: '/dashboard',
 			icon: 'heroicons:home',
+			children: housePages.value,
 		},
-	];
+	]);
 
 	async function onLogout() {
-		const { error: logoutError } = await signOut();
-		if (logoutError) throw error;
-
-		houseStore.reset();
-		houseMembersStore.reset();
-		houseRequestsStore.reset();
+		const { error } = await signOut();
+		if (error) throw error;
+		clearNuxtData();
 		navigateTo('/dashboard/login');
 	}
 </script>
