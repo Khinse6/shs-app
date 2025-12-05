@@ -1,5 +1,6 @@
 export const useHouse = () => {
 	const client = useSupabaseClient();
+	const { data: houses } = useNuxtData('houses');
 	const lazy = true;
 	const server = false;
 
@@ -47,13 +48,22 @@ export const useHouse = () => {
 		const { error } = await client.rpc('create_house', {
 			display_name: displayName,
 		});
-		if (error) throw error;
+		if (error) return error;
 
 		await refreshNuxtData('houses');
 	}
 
+	const housePages = computed(
+		() =>
+			houses.value?.map((row: any) => ({
+				label: row.displayName,
+				to: '/dashboard/houses/' + row.id,
+			})) ?? []
+	);
+
 	return {
 		getHouses,
 		createHouse,
+		housePages,
 	};
 };

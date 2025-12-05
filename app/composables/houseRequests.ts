@@ -17,12 +17,6 @@ export const useHouseRequests = () => {
 			{
 				lazy,
 				server,
-				transform: (data) =>
-					data.map((row) => ({
-						house_id: row.house_id,
-						user_id: row.user.id,
-						full_name: row.user.full_name,
-					})),
 				getCachedData(key, nuxtApp, context) {
 					if (context.cause.startsWith('refresh')) return undefined;
 					return nuxtApp.payload.data[key] || nuxtApp.static.data[key];
@@ -31,7 +25,31 @@ export const useHouseRequests = () => {
 		);
 	}
 
+	async function createHouseRequest(displayName: string, houseCode: string) {
+		return client.rpc('create_request', {
+			p_display_name: displayName,
+			p_house_id: houseCode,
+		});
+	}
+
+	async function approveHouseRequest(userId: string, houseCode: string) {
+		return client.rpc('approve_house_request', {
+			p_user_id: userId,
+			p_house_id: houseCode,
+		});
+	}
+
+	async function declineHouseRequest(userId: string, houseCode: string) {
+		return client
+			.from('house_requests')
+			.delete()
+			.eq('user_id', userId)
+			.eq('house_id', houseCode);
+	}
 	return {
 		getHouseRequests,
+		createHouseRequest,
+		approveHouseRequest,
+		declineHouseRequest,
 	};
 };

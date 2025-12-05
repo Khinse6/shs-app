@@ -1,6 +1,10 @@
 import { z } from 'zod';
 
 export const joinSchema = z.object({
+	name: z
+		.string('House name is required')
+		.min(3, 'Must be 3 characters or more')
+		.max(20, 'Must be 20 characters or less'),
 	code: z
 		.hex('Invalid house code')
 		.length(6, 'Must be 6 characters')

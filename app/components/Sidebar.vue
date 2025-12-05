@@ -31,23 +31,12 @@
 </template>
 
 <script lang="ts" setup>
-	import type { NavigationMenuItem, NavigationMenuChildItem } from '@nuxt/ui';
+	import type { NavigationMenuItem } from '@nuxt/ui';
 	const user = useSupabaseUser();
-	const { signOut } = useAuth();
 	const collapsed = ref(false);
 
 	defineShortcuts({ c: () => (collapsed.value = !collapsed.value) });
-	const { data: houses } = await useHouse().getHouses();
-
-	const housePages = ref<NavigationMenuChildItem[]>([]);
-
-	watchEffect(() => {
-		housePages.value =
-			houses.value?.map((row) => ({
-				label: row.displayName,
-				to: '/dashboard/houses/' + row.id,
-			})) ?? [];
-	});
+	const { housePages } = useHouse();
 
 	const pages = computed<NavigationMenuItem[]>(() => [
 		{
@@ -59,9 +48,9 @@
 	]);
 
 	async function onLogout() {
-		const { error } = await signOut();
+		const { error } = await useAuth().signOut();
 		if (error) throw error;
+		await navigateTo('/dashboard/login');
 		clearNuxtData();
-		navigateTo('/dashboard/login');
 	}
 </script>

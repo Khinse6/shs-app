@@ -15,7 +15,7 @@ export default defineNuxtConfig({
 	},
 	ssr: false,
 	css: ['~/assets/css/main.css'],
-	modules: ['@nuxt/ui', '@nuxtjs/supabase', '@pinia/nuxt', '@nuxt/hints'],
+	modules: ['@nuxt/ui', '@nuxtjs/supabase', '@nuxt/hints'],
 	vite: {
 		clearScreen: false,
 		envPrefix: ['VITE_', 'TAURI_'],
